@@ -156,8 +156,8 @@ export default {
       if (response.status === 201) {
         this.currentUserActive = true;
       }
-      console.log(response.data);
       localStorage.setItem("auth_key", response.data.auth_key);
+    //   this.$router.push('/updateUser');
       this.isFetching = false;
     },
   },

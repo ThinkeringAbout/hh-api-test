@@ -1,19 +1,22 @@
-import { createRouter, createWebHistory } from "vue-router";
-import CreateUserPage from "../components/CreateUserPage.vue";
-import UpdateUserPage from "../components/UpdateUserPage.vue";
+import { createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/createUser",
       name: "createUserPage",
-      component: CreateUserPage,
+      component: () => import('../components/CreateUserPage.vue'),
     },
     {
       path: "/updateUser",
       name: "updateUserPage",
-      component: UpdateUserPage,
+      component: () => import('../components/UpdateUserPage.vue'),
+    },
+    {
+      path: "/:catchAll(.*)",
+      name: "notFoundPage",
+      component: () => import('../components/NotFoundPage.vue'),
     }
   ],
 });

@@ -106,7 +106,7 @@
         <button
           class="w-5/6 h-8 border-2 border-[#669bbc] bg-white text-[#669bbc] hover:shadow-md hover:bg-[#669bbc] hover:text-white hover:shadow-black transition-all duration-300 rounded-md text-md"
         >
-          Создать
+          Изменить
         </button>
       </form>
     </div>
@@ -126,13 +126,6 @@
 
 <script>
 import axios from "axios";
-const auth_key = localStorage.getItem("auth_key");
-const url = "https://api.sitemap-generator.ru/test-api/user";
-const headers = {
-  "Content-Type": "application/json",
-  "X-Application-Token": "wefiEFv_dwDEvf-12Veda_feadvkJbBgh831",
-  Authorization: `Bearer ${auth_key}`,
-};
 
 export default {
   name: "CreateUserPage",
@@ -149,6 +142,13 @@ export default {
   },
   methods: {
     async updateUser() {
+      const auth_key = localStorage.getItem("auth_key");
+      const url = "https://api.sitemap-generator.ru/test-api/user";
+      const headers = {
+        "Content-Type": "application/json",
+        "X-Application-Token": "wefiEFv_dwDEvf-12Veda_feadvkJbBgh831",
+        Authorization: `Bearer ${auth_key}`,
+      };
       const response = await axios({
         method: "patch",
         url: url,
@@ -159,26 +159,27 @@ export default {
           phone: this.phoneInput,
         },
       });
-      console.log(response.headers);
-      this.responseHeaderText = response.headers.get("x-action-id");
+      //   for (let entry of response.headers.entries()) {
+      //     console.info(entry);
+      //   }
+      //   this.responseHeaderText = response.headers.get("x-action-id");
     },
   },
   async mounted() {
     this.isFetching = true;
+    const auth_key = localStorage.getItem("auth_key");
+    const url = "https://api.sitemap-generator.ru/test-api/user";
+    const headers = {
+      "Content-Type": "application/json",
+      "X-Application-Token": "wefiEFv_dwDEvf-12Veda_feadvkJbBgh831",
+      Authorization: `Bearer ${auth_key}`,
+    };
     if (localStorage.getItem("auth_key")) {
-      //   const auth_key = localStorage.getItem("auth_key");
-      //   const url = "https://api.sitemap-generator.ru/test-api/user";
-      //   const headers = {
-      //     "Content-Type": "application/json",
-      //     "X-Application-Token": "wefiEFv_dwDEvf-12Veda_feadvkJbBgh831",
-      //     Authorization: `Bearer ${auth_key}`,
-      //   };
       const response = await axios({
         method: "get",
         url: url,
         headers: headers,
       });
-      //   console.log(response.headers);
       this.fullnameInput = response.data.name;
       this.emailInput = response.data.email;
       if (response.data.phone) {
