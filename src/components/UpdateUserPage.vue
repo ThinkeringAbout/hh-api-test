@@ -111,14 +111,16 @@
       </form>
     </div>
     <div v-if="this.responseHeaderText">
-        <h3>X-Action-Id: {{ this.responseHeaderText }}</h3>
+      <h3>X-Action-Id: {{ this.responseHeaderText }}</h3>
     </div>
   </div>
   <div
     v-else
     class="w-full h-fit flex flex-col justify-center items-center pt-60"
   >
-    <h2 class="text-2xl text-red-600 text-center font-bold">Сначала создайте пользователя!</h2>
+    <h2 class="text-2xl text-red-600 text-center font-bold">
+      Сначала создайте пользователя!
+    </h2>
   </div>
 </template>
 
@@ -147,18 +149,19 @@ export default {
   },
   methods: {
     async updateUser() {
-        const response = await axios({
-            method: "patch",
-            url: url,
-            headers: headers,
-            data: {
-                name: this.fullnameInput,
-                email: this.emailInput,
-                phone: this.phoneInput,
-            }
-        });
-        console.log(response.headers);
-        this.responseHeaderText = response.headers.get('x-action-id');
+      axios({
+        method: "patch",
+        url: url,
+        headers: headers,
+        data: {
+          name: this.fullnameInput,
+          email: this.emailInput,
+          phone: this.phoneInput,
+        },
+      }).then((res) => {
+          console.log('XHR response headers', res.request.getAllResponseHeaders());
+      });
+    //   this.responseHeaderText = response.headers.get("x-action-id");
     },
   },
   async mounted() {
@@ -176,14 +179,14 @@ export default {
         url: url,
         headers: headers,
       });
-    //   console.log(response.headers);
+      //   console.log(response.headers);
       this.fullnameInput = response.data.name;
       this.emailInput = response.data.email;
       if (response.data.phone) {
         this.phoneInput = response.data.phone;
       }
     } else {
-        this.userInactive = true;
+      this.userInactive = true;
     }
     this.isFetching = false;
   },
