@@ -11,6 +11,20 @@
     v-else-if="!this.userInactive"
     class="w-full h-fit pt-20 gap-8 flex flex-col justify-center items-center"
   >
+    <TransitionGroup name="slide_top">
+      <div
+        v-if="this.responseStatus === 'success'"
+        class="w-60 h-20 border-4 rounded-lg border-emerald-600 fixed left-3/5 top-0 z-50 bg-emerald-400 text-3xl flex justify-center items-center text-emerald-600 font-bold"
+      >
+        <p>Успешно</p>
+      </div>
+      <div
+        v-if="this.responseStatus === 'failed'"
+        class="w-60 h-20 border-4 rounded-lg border-red-600 fixed left-3/5 top-0 z-50 bg-red-400 text-3xl flex justify-center items-center text-red-600 font-bold"
+      >
+        <p>Ошибка</p>
+      </div>
+    </TransitionGroup>
     <h2 class="text-4xl text-[#669bbc] font-bold tracking-wider">
       Редактировать
     </h2>
@@ -104,14 +118,18 @@
           >
         </div>
         <button
-          class="w-5/6 h-8 border-2 border-[#669bbc] bg-white text-[#669bbc] hover:shadow-md hover:bg-[#669bbc] hover:text-white hover:shadow-black transition-all duration-300 rounded-md text-md"
+          class="w-5/6 h-8 border-2 flex justify-center items-center border-[#669bbc] bg-white text-[#669bbc] hover:shadow-md hover:bg-[#669bbc] hover:text-white hover:shadow-black transition-all duration-300 rounded-md text-md"
         >
-          Изменить
+          <div
+            v-if="this.requestFetching"
+            class="w-6 h-6 rounded-full border-4 border-t-[#669bbc] animate-spin"
+          ></div>
+          <p v-else>Изменить</p>
         </button>
       </form>
     </div>
-    <div v-if="this.responseHeaderText">
-      <h3>X-Action-Id: {{ this.responseHeaderText }}</h3>
+    <div v-if="this.errMessage">
+      <h3 class="text-red-600">Error: {{ this.errMessage }}</h3>
     </div>
   </div>
   <div
@@ -138,6 +156,8 @@ export default {
       isFetching: false,
       userInactive: false,
       responseHeaderText: "",
+      requestFetching: false,
+      responseStatus: null,
     };
   },
   methods: {
@@ -149,20 +169,31 @@ export default {
         "X-Application-Token": "wefiEFv_dwDEvf-12Veda_feadvkJbBgh831",
         Authorization: `Bearer ${auth_key}`,
       };
-      const response = await axios({
-        method: "patch",
-        url: url,
-        headers: headers,
-        data: {
-          name: this.fullnameInput,
-          email: this.emailInput,
-          phone: this.phoneInput,
-        },
-      });
-      //   for (let entry of response.headers.entries()) {
-      //     console.info(entry);
-      //   }
-      //   this.responseHeaderText = response.headers.get("x-action-id");
+      this.requestFetching = true;
+      this.errMessage = "";
+      try {
+        await axios({
+          method: "patch",
+          url: url,
+          headers: headers,
+          data: {
+            name: this.fullnameInput,
+            email: this.emailInput,
+            phone: this.phoneInput,
+          },
+        });
+        this.responseStatus = "success";
+        setTimeout(() => {
+          this.responseStatus = null;
+        }, 1000);
+      } catch (error) {
+        this.errMessage = error;
+        this.responseStatus = "failed";
+        setTimeout(() => {
+          this.responseStatus = null;
+        }, 1000);
+      }
+      this.requestFetching = false;
     },
   },
   async mounted() {
@@ -192,3 +223,17 @@ export default {
   },
 };
 </script>
+
+<style>
+.slide_top-move, /* apply transition to moving elements */
+.slide_top-enter-active,
+.slide_top-leave-active {
+  transition: all 0.5s ease;
+}
+
+.slide_top-enter-from,
+.slide_top-leave-to {
+  opacity: 0;
+  transform: translateY(-50px);
+}
+</style>

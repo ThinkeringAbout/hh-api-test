@@ -109,6 +109,9 @@
         </button>
       </form>
     </div>
+    <div v-if="this.errMessage">
+      <h3 class="text-red-600">Error: {{ this.errMessage }}</h3>
+    </div>
   </div>
   <div
     v-else
@@ -137,28 +140,34 @@ export default {
       errMessage: "",
       currentUserActive: false,
       phoneInput: "",
+      errMessage: "",
     };
   },
   methods: {
     async createUser() {
       this.isFetching = true;
-      const response = await axios.post(
-        url,
-        {
-          name: this.fullnameInput,
-          email: this.emailInput,
-          phone: this.phoneInput,
-        },
-        {
-          headers: headers,
-        }
-      );
-      if (response.status === 201) {
-        this.currentUserActive = true;
+      this.errMessage = "";
+      try {
+          const response = await axios.post(
+            url,
+            {
+              name: this.fullnameInput,
+              email: this.emailInput,
+              phone: this.phoneInput,
+            },
+            {
+              headers: headers,
+            }
+          );
+          if (response.status === 201) {
+            this.currentUserActive = true;
+          }
+          localStorage.setItem("auth_key", response.data.auth_key);
+        //   this.$router.push('/updateUser');
+          this.isFetching = false;
+      } catch (error) {
+        this.errMessage = error;
       }
-      localStorage.setItem("auth_key", response.data.auth_key);
-    //   this.$router.push('/updateUser');
-      this.isFetching = false;
     },
   },
   mounted() {
