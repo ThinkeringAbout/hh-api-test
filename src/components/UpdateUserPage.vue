@@ -157,7 +157,7 @@ export default {
                 phone: this.phoneInput,
             }
         });
-        // console.log(response.headers.get('x-action-id'));
+        console.log(response.headers);
         this.responseHeaderText = response.headers.get('x-action-id');
     },
   },

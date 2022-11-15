@@ -114,7 +114,7 @@
     v-else
     class="w-full h-fit flex flex-col justify-center items-center pt-60"
   >
-    <h2 class="text-2xl text-green-600 text-center font-bold">Вы успешно пользователя!</h2>
+    <h2 class="text-2xl text-green-600 text-center font-bold">Вы успешно создали пользователя!</h2>
   </div>
 </template>
 
