@@ -149,7 +149,7 @@ export default {
   },
   methods: {
     async updateUser() {
-      axios({
+      const response = await axios({
         method: "patch",
         url: url,
         headers: headers,
@@ -158,10 +158,9 @@ export default {
           email: this.emailInput,
           phone: this.phoneInput,
         },
-      }).then((res) => {
-          console.log('XHR response headers', res.request.getAllResponseHeaders());
       });
-    //   this.responseHeaderText = response.headers.get("x-action-id");
+      console.log(response.headers);
+      this.responseHeaderText = response.headers.get("x-action-id");
     },
   },
   async mounted() {
